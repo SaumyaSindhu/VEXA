@@ -1,0 +1,133 @@
+.verify-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at 20% 20%, rgba(49, 184, 198, 0.08), transparent 40%),
+              radial-gradient(circle at 80% 80%, rgba(49, 184, 198, 0.05), transparent 40%),
+              #050505;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #e4e4e7;
+}
+
+.verify-container {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Card */
+.verify-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+  border-radius: 18px;
+
+  background: rgba(20, 20, 22, 0.75);
+  backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(120deg, transparent, rgba(49, 184, 198, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Icon */
+.verify-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Title */
+.verify-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #31b8c6, #6ee7f9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Text */
+.verify-text {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #d4d4d8;
+}
+
+.verify-subtext {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #a1a1aa;
+}
+
+/* Button */
+.verify-btn {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, #31b8c6, #4fd1de);
+  color: #041014;
+
+  font-weight: 600;
+  text-decoration: none;
+
+  box-shadow:
+    0 10px 25px rgba(49, 184, 198, 0.25);
+
+  transition: all 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 15px 35px rgba(49, 184, 198, 0.35),
+      0 0 10px rgba(49, 184, 198, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .verify-card {
+    padding: 1.8rem;
+  }
+
+  .verify-title {
+    font-size: 1.6rem;
+  }
+
+  .verify-icon {
+    font-size: 2rem;
+  }
+}
