@@ -13,7 +13,6 @@ export async function sendMessageController(req, res) {
                 success: false
             })
         }
-
         
         let title = null, chat = null;
         
@@ -32,10 +31,8 @@ export async function sendMessageController(req, res) {
            role: "user",
          });
         
-        const activeChatId = chatId || chat._id;
-        
         // fetch history
-        const messages = await messageModel.find({ chat: activeChatId }).sort({ createdAt: 1 });
+        const messages = await messageModel.find({ chat: chatId || chat._id }).sort({ createdAt: 1 });
 
         // generate AI response
         const result = await generateResponse(messages);
@@ -65,7 +62,7 @@ export async function getChatsController(req, res) {
     try {
         const user = req.user
 
-        const chats = await (await chatModel.find({ user: user.id })).toSorted({ updatedAt: -1 })
+        const chats = await chatModel.find({ user: user.id }).sort({ updatedAt: -1 })
 
         res.status(200).json({
             message: "Chats retrieved successfully",

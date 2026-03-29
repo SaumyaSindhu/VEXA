@@ -11,7 +11,7 @@ function App() {
   const { loading } = useSelector((state) => state.auth)
 
   useEffect(() => {
-    auth.handleGetMe()
+    auth.handleGetMe();
   }, [])
 
   if (loading) {
