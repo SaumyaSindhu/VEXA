@@ -5,6 +5,7 @@ import { HumanMessage, SystemMessage, AIMessage } from 'langchain';
 const geminiModel = new ChatGoogleGenerativeAI({
   model: "gemini-2.5-flash-lite",
   apiKey: process.env.GEMINI_API_KEY,
+  streaming: true // for SSE(server sent event)
 });
 
 const mistralModel = new ChatMistralAI({
@@ -40,6 +41,18 @@ export async function generateChatTitle(message) {
   ]);
 
   return response.text;
+}
+
+export async function generateStreamingResponse(messages) {
+  return await geminiModel.stream(
+    messages.map((msg) => {
+      if (msg.role === "user") {
+        return new HumanMessage(msg.content);
+      } else {
+        return new AIMessage(msg.content);
+      }
+    }),
+  );
 }
 
 

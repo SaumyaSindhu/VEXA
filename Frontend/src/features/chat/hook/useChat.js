@@ -1,6 +1,6 @@
 import { initializeSocketConnection } from "../service/chat.socket";
-import { sendMessage, getChats, getMessages, deleteChat } from "../service/chat.api";
-import { setChats, setCurrentChatId, setError, setLoading, createNewChat, addNewMessage, addMessages } from "../chat.slice";
+import { sendMessage, getChats, getMessages, deleteChat, streamMessage } from "../service/chat.api";
+import { setChats, setCurrentChatId, setError, setLoading, createNewChat, addNewMessage, addMessages, updateStreamingMessage } from "../chat.slice";
 import { useDispatch } from "react-redux";
 
 export const useChat = () => {
@@ -9,6 +9,53 @@ export const useChat = () => {
   async function handleSendMessage({ message, chatId }) {
       try {
         dispatch(setLoading(true));
+
+        const USE_STREAMING = true;
+
+        if (USE_STREAMING) {
+          let activeChatId = chatId;
+
+          if (!chatId) {
+            const data = await sendMessage({ message, chatId: null });
+            const { chat } = data;
+
+            dispatch(createNewChat({
+                chatId: chat._id,
+                title: chat.title,
+              }),
+            );
+
+            activeChatId = chat._id;
+            dispatch(setCurrentChatId(activeChatId));
+          }
+
+          dispatch(addNewMessage({
+              chatId: activeChatId,
+              content: message,
+              role: "user",
+            }),
+          );
+
+          let fullText = "";
+
+          // STREAM TOKENS
+          await streamMessage({
+            message,
+            chatId: activeChatId,
+            onToken: (token) => {
+              fullText += token;
+
+              dispatch(
+                updateStreamingMessage({
+                  chatId: activeChatId,
+                  content: fullText,
+                }),
+              );
+            },
+          });
+
+          return; 
+        }
 
         const data = await sendMessage({ message, chatId });
         const { chat, aiMessage } = data;
