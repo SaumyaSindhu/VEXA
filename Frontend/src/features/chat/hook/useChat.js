@@ -19,7 +19,8 @@ export const useChat = () => {
             const data = await sendMessage({ message, chatId: null });
             const { chat } = data;
 
-            dispatch(createNewChat({
+            dispatch(
+              createNewChat({
                 chatId: chat._id,
                 title: chat.title,
               }),
@@ -29,32 +30,61 @@ export const useChat = () => {
             dispatch(setCurrentChatId(activeChatId));
           }
 
-          dispatch(addNewMessage({
+          dispatch(
+            addNewMessage({
               chatId: activeChatId,
               content: message,
               role: "user",
             }),
           );
 
+          let buffer = "";
           let fullText = "";
+          let typingInterval = null;
 
           // STREAM TOKENS
           await streamMessage({
             message,
             chatId: activeChatId,
             onToken: (token) => {
-              fullText += token;
+              buffer += token;
 
-              dispatch(
-                updateStreamingMessage({
-                  chatId: activeChatId,
-                  content: fullText,
-                }),
-              );
+              // start typing loop once
+              if (!typingInterval) {
+                typingInterval = setInterval(() => {
+                  if (buffer.length > 0) {
+                    // control typing speed here
+                    const chunk = buffer.slice(0, 2); // adjust speed
+                    buffer = buffer.slice(2);
+
+                    fullText += chunk;
+
+                    dispatch(
+                      updateStreamingMessage({
+                        chatId: activeChatId,
+                        content: fullText,
+                      }),
+                    );
+                  } else if (buffer.length === 0) {
+                    clearInterval(typingInterval);
+                    typingInterval = null;
+                  }
+                }, 30); // speed control (lower = faster)
+              }
             },
           });
 
-          return; 
+          // after stream finishes flush buffer
+          await new Promise((resolve) => {
+            const check = setInterval(() => {
+              if (!typingInterval) {
+                clearInterval(check);
+                resolve();
+              }
+            }, 10);
+          });
+
+          return;
         }
 
         const data = await sendMessage({ message, chatId });
