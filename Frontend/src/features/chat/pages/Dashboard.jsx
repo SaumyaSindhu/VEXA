@@ -167,6 +167,21 @@ const Icons = {
       <line x1="9" y1="3" x2="9" y2="21" />
     </svg>
   ),
+  Trash: () => (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 6h18" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <line x1="10" y1="11" x2="10" y2="17" />
+      <line x1="14" y1="11" x2="14" y2="17" />
+    </svg>
+  ),
 };
 
 // ─── Static Data ──────────────────────────────────────────────────────────────
@@ -211,6 +226,8 @@ const Dashboard = () => {
 
   const [inputValue, setInputValue] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [chatToDelete, setChatToDelete] = useState(null);
   const textareaRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -270,6 +287,24 @@ const Dashboard = () => {
     textareaRef.current?.focus();
   };
 
+  const handleDeleteChat = (chatId) => {
+    setChatToDelete(chatId);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    if (chatToDelete) {
+      chat.handleDeleteChat(chatToDelete);
+    }
+    setShowDeleteConfirm(false);
+    setChatToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setChatToDelete(null);
+  };
+
   // ── Uses handleOpenChat so messages are fetched before switching view ──
   const handleHistoryClick = (chatId) => {
     chat.handleOpenChat(chatId, chats);
@@ -322,6 +357,16 @@ const Dashboard = () => {
             >
               <Icons.MessageCircle />
               <span>{chatItem.title || "New Chat"}</span>
+              <button
+                className="sidebar__history-item-delete"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteChat(chatItem.id);
+                }}
+                title="Delete chat"
+              >
+                <Icons.Trash />
+              </button>
             </div>
           ))}
         </div>
@@ -494,6 +539,34 @@ const Dashboard = () => {
           </div>
         </div>
       </main>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="delete-modal">
+          <div className="delete-modal__backdrop" onClick={cancelDelete} />
+          <div className="delete-modal__content">
+            <h3 className="delete-modal__title">Delete Chat</h3>
+            <p className="delete-modal__message">
+              Are you sure you want to delete this chat? This action cannot be
+              undone.
+            </p>
+            <div className="delete-modal__actions">
+              <button
+                className="delete-modal__btn delete-modal__btn--cancel"
+                onClick={cancelDelete}
+              >
+                Cancel
+              </button>
+              <button
+                className="delete-modal__btn delete-modal__btn--confirm"
+                onClick={confirmDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -13,7 +13,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const { loading, user } = useSelector((state) => state.auth);
+  const { loading, user, error } = useSelector((state) => state.auth);
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -74,7 +74,11 @@ const Login = () => {
           </form>
 
           <p className="login-footer">
-            Don't have an account?{" "}
+            {error === "User not registered" ? (
+              <span style={{ color: "#ff4d4f", fontWeight: "bold" }}>Register first </span>
+            ) : (
+              "Don't have an account? "
+            )}
             <Link to="/register" className="register-link">
               Register
             </Link>

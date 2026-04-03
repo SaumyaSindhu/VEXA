@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { deleteChat } from "./service/chat.api";
 
 const chatSlice = createSlice({
   name: "chat",
@@ -53,8 +54,18 @@ const chatSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    deleteChatLocal: (state, action)=> {
+      const chatId = action.payload;
+      
+      delete state.chats[chatId];
+
+      // reset current chat if deleted chat is current
+      if(state.currentChatId === chatId) {
+        state.currentChatId = null;
+      }
+    }
   },
 });
 
-export const { setChats, setCurrentChatId, setLoading, setError, createNewChat, addNewMessage, addMessages, updateStreamingMessage } = chatSlice.actions
+export const { setChats, setCurrentChatId, setLoading, setError, createNewChat, addNewMessage, addMessages, updateStreamingMessage, deleteChatLocal } = chatSlice.actions
 export default chatSlice.reducer

@@ -1,9 +1,12 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatMistralAI } from '@langchain/mistralai';
-import { HumanMessage, SystemMessage, AIMessage } from 'langchain';
+import { HumanMessage, SystemMessage, AIMessage, tool, createAgent } from 'langchain';
+import { ToolMessage } from '@langchain/core/messages';
+import * as z from 'zod';
+import { searchInternet } from "./internet.service.js";
 
 const geminiModel = new ChatGoogleGenerativeAI({
-  model: "gemini-2.5-flash-lite",
+  model: "gemini-2.5-flash",
   apiKey: process.env.GEMINI_API_KEY,
   streaming: true // for SSE(server sent event)
 });
@@ -13,17 +16,42 @@ const mistralModel = new ChatMistralAI({
   apiKey: process.env.MISTRAL_API_KEY
 })
 
+const searchInternetTool = tool(
+  searchInternet,
+  {
+    name: "searchInternet",
+    description: "Use this tool to get the latest information from the internet.",
+    schema: z.object({
+      query: z.string().describe("The search query to look up on the internet.")
+    })
+  }
+)
+
+const agent = createAgent({
+  model: geminiModel,
+  tools: [searchInternetTool]
+})
+
 export async function generateResponse(messages) {
   
-  const response = await geminiModel.invoke(messages.map(msg => {
-    if (msg.role == "user") {
-      return new HumanMessage(msg.content)
-    } else {
-      return new AIMessage(msg.content)
-    }
-  }));
+  const response = await agent.invoke({
+    messages: [
+      new SystemMessage(`
+                You are a helpful and precise assistant for answering questions.
+                If you don't know the answer, say you don't know. 
+                If the question requires up-to-date information, use the "searchInternet" tool to get the latest information from the internet and then answer based on the search results.
+            `),
+      ...messages.map((msg) => {
+        if (msg.role == "user") {
+          return new HumanMessage(msg.content);
+        } else if (msg.role == "ai") {
+          return new AIMessage(msg.content);
+        }
+      }),
+    ],
+  });
 
-  return response.text;
+  return response.messages[response.messages.length - 1].text;
 }
 
 export async function generateChatTitle(message) {
@@ -43,16 +71,68 @@ export async function generateChatTitle(message) {
   return response.text;
 }
 
-export async function generateStreamingResponse(messages) {
-  return await geminiModel.stream(
-    messages.map((msg) => {
+export async function* generateStreamingResponse(messages) {
+  const modelWithTools = geminiModel.bindTools([searchInternetTool]);
+
+  const history = [
+    new SystemMessage(`
+        You are a helpful and precise assistant for answering questions.
+        If the question requires up-to-date information, use the "searchInternet" tool to get the latest information from the internet and then answer based on the search results.
+    `),
+    ...messages.map((msg) => {
       if (msg.role === "user") {
         return new HumanMessage(msg.content);
       } else {
         return new AIMessage(msg.content);
       }
     }),
-  );
+  ];
+
+  while (true) {
+    const stream = await modelWithTools.stream(history);
+    let chunks = [];
+
+    for await (const chunk of stream) {
+      chunks.push(chunk);
+      if (typeof chunk.content === "string" && chunk.content.length > 0) {
+        yield chunk; // Yield text token to stream
+      } else if (Array.isArray(chunk.content)) {
+        // Some providers yield arrays, we only want the text strings
+        let textPart = chunk.content.find(part => part.type === "text" || ('text' in part));
+        if (textPart && textPart.text) {
+          yield { ...chunk, content: textPart.text };
+        }
+      }
+    }
+
+    // Combine chunks to check for tool calls
+    let fullMessage = chunks[0];
+    for (let i = 1; i < chunks.length; i++) {
+        fullMessage = fullMessage.concat(chunks[i]);
+    }
+
+    if (fullMessage?.tool_calls?.length > 0) {
+      history.push(fullMessage);
+      
+      for (const toolCall of fullMessage.tool_calls) {
+        if (toolCall.name === "searchInternet") {
+          let result;
+          try {
+            result = await searchInternet(toolCall.args);
+          } catch (err) {
+            result = "Failed to search the internet";
+          }
+          history.push(new ToolMessage({
+            tool_call_id: toolCall.id,
+            content: result
+          }));
+        }
+      }
+      // Loop continues with the provided tool results
+    } else {
+      break;
+    }
+  }
 }
 
 

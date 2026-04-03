@@ -29,14 +29,14 @@ export async function registerController(req, res) {
 
     await sendEmail({
       to: email,
-      subject: "Welcome to Perplexity",
+      subject: "Welcome to VEXA",
       html: `
                 <p>Hi ${username},</p>
-                <p>Thank you for registering at <strong>Perplexity</strong>. We're excited to have you on board!</p>
+                <p>Thank you for registering at <strong>VEXA</strong>. We're excited to have you on board!</p>
                 <p>Please verify your email address by clicking the link below:</p>
                 <a href="http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}">Verify Email</a>
                 <p>If you did not create an account, please ignore this email.</p>
-                <p>Best regards,<br>The Perplexity Team</p>
+                <p>Best regards,<br>The VEXA Team</p>
         `,
     });
 
@@ -65,7 +65,7 @@ export async function loginController(req, res) {
 
     if (!user) {
       return res.status(400).json({
-        message: "Invalid email or password",
+        message: "User not registered",
         success: false,
       });
     }

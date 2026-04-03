@@ -16,7 +16,7 @@ export function useAuth() {
             return true
 
         } catch (err) {
-            dispatch(setError(err.response?.data?.message || "Registration failed"))
+            dispatch(setError(err.message || "Registration failed"))
             return false
         } finally {
             dispatch(setLoading(false))
@@ -34,7 +34,7 @@ export function useAuth() {
             return true
 
         } catch (err) {
-            dispatch(setError(err.response?.data?.message || "Login failed"))
+            dispatch(setError(err.message || "Login failed"))
             return false
         } finally {
             dispatch(setLoading(false))
@@ -50,7 +50,7 @@ export function useAuth() {
             dispatch(setUser(data.user))
 
         } catch (err) {
-            dispatch(setError(err.response?.data?.message) || "Failed to fetch user")
+            dispatch(setError(err.message || "Failed to fetch user"))
         } finally {
             dispatch(setLoading(false))
         }
