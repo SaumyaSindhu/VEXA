@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.routes.js';
 import chatRouter from './routes/chat.routes.js';
+import { globalLimiter } from './middleware/rateLimiter.middleware.js';
 import morgan from 'morgan';
 import cors from 'cors';
 
@@ -17,7 +18,9 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use(globalLimiter);
 app.use(morgan("dev"));
+
 
 
 //Health check
