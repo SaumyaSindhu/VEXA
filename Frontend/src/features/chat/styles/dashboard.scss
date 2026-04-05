@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap");
 
-// ─── Design Tokens ────────────────────────────────────────────────────────────
+// Design Tokens
 :root {
   --bg-deep: #050d0d;
   --bg-card: #0d1a1a;
@@ -39,7 +39,7 @@
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-// ─── Reset ────────────────────────────────────────────────────────────────────
+// Reset 
 *,
 *::before,
 *::after {
@@ -55,7 +55,7 @@ button {
   background: none;
 }
 
-// ─── Dashboard Root ───────────────────────────────────────────────────────────
+// Dashboard Root
 .dashboard {
   display: flex;
   height: 100vh;
@@ -111,7 +111,7 @@ button {
   }
 }
 
-// ─── Sidebar Backdrop ─────────────────────────────────────────────────────────
+// Sidebar Backdrop
 .sidebar__backdrop {
   display: none;
   position: fixed;
@@ -127,7 +127,7 @@ button {
   }
 }
 
-// ─── Sidebar ──────────────────────────────────────────────────────────────────
+// Sidebar 
 .sidebar {
   position: fixed;
   top: 0;
@@ -168,7 +168,7 @@ button {
     }
   }
 
-  // ── Logo ──────────────────────────────────────────────────────────────────
+  // Logo
   &__logo {
     display: flex;
     align-items: center;
@@ -209,7 +209,7 @@ button {
     }
   }
 
-  // ── New Chat Button ────────────────────────────────────────────────────────
+  // New Chat Button
   &__new-chat {
     display: flex;
     align-items: center;
@@ -272,7 +272,7 @@ button {
     }
   }
 
-  // ── Section Title ──────────────────────────────────────────────────────────
+  // Section Title
   &__section-title {
     font-size: 10px;
     font-weight: 600;
@@ -283,7 +283,7 @@ button {
     margin-bottom: 8px;
   }
 
-  // ── History List ──────────────────────────────────────────────────────────
+  // History List
   &__history {
     flex: 1;
     overflow-y: auto;
@@ -394,14 +394,14 @@ button {
     }
   }
 
-  // ── Divider ───────────────────────────────────────────────────────────────
+  // Divider 
   &__divider {
     height: 1px;
     background: var(--border-subtle);
     margin: 16px 0;
   }
 
-  // ── User Profile ──────────────────────────────────────────────────────────
+  // User Profile
   &__user {
     display: flex;
     align-items: center;
@@ -464,7 +464,7 @@ button {
   }
 }
 
-// ─── Main Panel ───────────────────────────────────────────────────────────────
+// Main Panel
 .main {
   flex: 1;
   display: flex;
@@ -481,7 +481,7 @@ button {
     margin-left: var(--sidebar-width);
   }
 
-  // ── Top Bar ───────────────────────────────────────────────────────────────
+  // Top Bar
   &__topbar {
     display: flex;
     align-items: center;
@@ -545,7 +545,7 @@ button {
     }
   }
 
-  // ── Scrollable Content ────────────────────────────────────────────────────
+  // Scrollable Content
   &__content {
     flex: 1;
     overflow-y: auto;
@@ -567,7 +567,7 @@ button {
     }
   }
 
-  // ── Welcome / Empty State ─────────────────────────────────────────────────
+  // Welcome / Empty State
   &__welcome {
     flex: 1;
     display: flex;
@@ -629,7 +629,7 @@ button {
     margin-top: 4px;
   }
 
-  // ── Suggestion Cards ──────────────────────────────────────────────────────
+  // Suggestion Cards 
   &__suggestions {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -722,7 +722,7 @@ button {
     }
   }
 
-  // ── Input Area ────────────────────────────────────────────────────────────
+  // Input Area 
   &__input-area {
     padding: 20px 32px 28px;
     flex-shrink: 0;
@@ -855,7 +855,7 @@ button {
   }
 }
 
-// ─── Chat Messages ────────────────────────────────────────────────────────────
+// Chat Messages
 .chat {
   &__messages {
     flex: 1;
@@ -966,7 +966,7 @@ button {
     }
   }
 
-  // ── ReactMarkdown output ────────────────────────────────────────────────────
+  // ReactMarkdown output
   &__markdown {
     display: flex;
     flex-direction: column;
@@ -1166,7 +1166,7 @@ button {
   }
 }
 
-// ─── Keyframes ────────────────────────────────────────────────────────────────
+// Keyframes
 @keyframes typing-bounce {
   0%,
   80%,
@@ -1200,7 +1200,7 @@ button {
   }
 }
 
-// ─── Delete Modal ─────────────────────────────────────────────────────────────
+// Delete Modal
 .delete-modal {
   position: fixed;
   top: 0;

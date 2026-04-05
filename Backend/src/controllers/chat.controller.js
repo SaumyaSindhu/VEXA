@@ -37,7 +37,7 @@ export async function sendMessageController(req, res) {
       .sort({ createdAt: 1 });
 
     // generate AI response
-    const result = await generateResponse(messages);
+    const result = await generateResponse(messages, req.user.id);
 
     // save AI response
     const aiMessage = await messageModel.create({
@@ -175,7 +175,7 @@ export async function streamMessageController(req, res) {
       .find({ chat: activeChatId })
       .sort({ createdAt: 1 });
 
-    const stream = await generateStreamingResponse(messages);
+    const stream = await generateStreamingResponse(messages, req.user.id);
 
     let fullResponse = "";
 

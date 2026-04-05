@@ -5,7 +5,7 @@ import { setCurrentChatId } from "../chat.slice.js";
 import ReactMarkdown from "react-markdown";
 import "../styles/dashboard.scss";
 
-// ─── Icon Components ──────────────────────────────────────────────────────────
+// Icon Components
 const Icons = {
   Logo: () => (
     <svg
@@ -184,7 +184,7 @@ const Icons = {
   ),
 };
 
-// ─── Static Data ──────────────────────────────────────────────────────────────
+// Static Data
 const SUGGESTION_CARDS = [
   {
     icon: "🌐",
@@ -208,7 +208,7 @@ const SUGGESTION_CARDS = [
   },
 ];
 
-// ─── Dashboard Component ──────────────────────────────────────────────────────
+// Dashboard Component
 const Dashboard = () => {
   const chat = useChat();
   const dispatch = useDispatch();
@@ -305,7 +305,7 @@ const Dashboard = () => {
     setChatToDelete(null);
   };
 
-  // ── Uses handleOpenChat so messages are fetched before switching view ──
+  // Uses handleOpenChat so messages are fetched before switching view
   const handleHistoryClick = (chatId) => {
     chat.handleOpenChat(chatId, chats);
   };
@@ -314,7 +314,7 @@ const Dashboard = () => {
     <div
       className={`dashboard${sidebarOpen ? " dashboard--sidebar-open" : ""}`}
     >
-      {/* ── Backdrop (mobile) ── */}
+      {/* Backdrop (mobile) */}
       {sidebarOpen && (
         <div
           className="sidebar__backdrop"
@@ -322,7 +322,7 @@ const Dashboard = () => {
         />
       )}
 
-      {/* ── Sidebar ── */}
+      {/* Sidebar */}
       <aside className={`sidebar${sidebarOpen ? " sidebar--open" : ""}`}>
         {/* Logo */}
         <div className="sidebar__logo">
@@ -412,7 +412,7 @@ const Dashboard = () => {
         {/* Scrollable Content */}
         <div className="main__content">
           {!currentChatId ? (
-            /* ── Welcome / Empty State ── */
+            /* Welcome / Empty State */
             <div className="main__welcome">
               <div className="main__welcome-badge">
                 <span className="dot" />
@@ -448,7 +448,7 @@ const Dashboard = () => {
               </div>
             </div>
           ) : (
-            /* ── Chat Messages ── */
+            /* Chat Messages */
             <div className="chat__messages">
               {messages.map((msg, index) => (
                 <div key={index}>
@@ -462,7 +462,7 @@ const Dashboard = () => {
                     </div>
                     <div className="chat__bubble">
                       {isAiMessage(msg.role) ? (
-                        // ── ReactMarkdown renders headings, code blocks, lists, bold etc.
+                        // ReactMarkdown renders headings, code blocks, lists, bold etc.
                         <div className="chat__markdown">
                           <ReactMarkdown>{msg.content}</ReactMarkdown>
                         </div>

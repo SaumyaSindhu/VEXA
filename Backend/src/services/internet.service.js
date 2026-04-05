@@ -8,6 +8,7 @@ export const searchInternet = async ({ query }) => {
     try {
         const result = await tvly.search(query, {
             maxResults: 5,
+            deepSearch: true
         })
 
         // the result is an array of search results, we can return it as a JSON string
